@@ -12,7 +12,7 @@ namespace SideProject.Base
             this.action = action;
         }
 
-        public event EventHandler CanExecuteChanged = (s, e) => { };
+        public event EventHandler CanExecuteChanged;
 
         public bool CanExecute(object parameter)
         {
