@@ -8,5 +8,6 @@ namespace WPF_Mvvm
         public IIconSet IconSource => new FooIconSet();
 
         public MainViewModel MainViewModel => new MainViewModel();
+
     }
 }
