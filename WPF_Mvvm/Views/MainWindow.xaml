@@ -8,11 +8,13 @@
         DataContext="{Binding Source={StaticResource Locator}, Path=MainViewModel}"
         Title="MainWindow" Height="450" Width="800">
 
-    <Grid>
-        <StackPanel HorizontalAlignment="Center">
-            <DockPanel LastChildFill="False">
-                <TextBox DockPanel.Dock="Left" Width="150" Height="30" Text="{Binding SearchText, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}"/>
-                <Button DockPanel.Dock="Right" Width="30" Height="30" Command="{Binding SearchCommand}">
+    <DockPanel>
+        <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Width="300" Margin="20">
+            <DockPanel LastChildFill="True" Margin="10">
+                <TextBox DockPanel.Dock="Left" Width="150" Height="30" 
+                         Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                <Button HorizontalAlignment="Left" Width="30" Height="30" Margin="5 0"
+                        Command="{Binding SearchCommand}">
                     <Viewbox Margin="5">
                         <Path Fill="Black" Stretch="Uniform"
                               Data="{Binding Source={StaticResource Locator}, Path=IconSource.Search}"/>
@@ -20,8 +22,82 @@
                 </Button>
             </DockPanel>
             
-            <TextBlock Text="{Binding SearchText}"/>
+            <ItemsControl Margin="10 0" ItemsSource="{Binding SetIconModels}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                
+                <ItemsControl.ItemTemplate> 
+                    <DataTemplate>
+                        <Border  BorderThickness="1" Background="Wheat" BorderBrush="Black" Margin="5" Padding="5" Width="80">
+                            <Border.InputBindings>
+                                <MouseBinding MouseAction="LeftClick" 
+                                              Command="{Binding DataContext.ChooseCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}"
+                                              CommandParameter="{Binding .}"/>
+                            </Border.InputBindings>
+                            
+                            <DockPanel>
+                                <Grid x:Name="grid" DockPanel.Dock="Top" Background="Transparent" MinHeight="36" MinWidth="36">
+                                    <Path x:Name="icon" Data="{Binding IconData}" Width="20" Height="20" Fill="Black" Stretch="Uniform"
+                                      Opacity="0.8">
+                                        <Path.LayoutTransform>
+                                            <ScaleTransform x:Name="IconScale"/>
+                                        </Path.LayoutTransform>
+                                    </Path>
+                                </Grid>
+
+                                <TextBlock Text="{Binding IconName}" HorizontalAlignment="Center"/>
+                            </DockPanel>
+                        </Border>
+
+                        <DataTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Opacity" TargetName="icon" Value="1"/>
+                                <Trigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="IconScale" Storyboard.TargetProperty="ScaleX"
+                                                             To="1.2"
+                                                             Duration="0:0:0.15"/>
+                                            <DoubleAnimation Storyboard.TargetName="IconScale" Storyboard.TargetProperty="ScaleY"
+                                                             To="1.2"
+                                                             Duration="0:0:0.15"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.EnterActions>
+                                <Trigger.ExitActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="IconScale" Storyboard.TargetProperty="ScaleX"
+                                                             To="1"
+                                                             Duration="0:0:0.15"/>
+                                            <DoubleAnimation Storyboard.TargetName="IconScale" Storyboard.TargetProperty="ScaleY"
+                                                             To="1"
+                                                             Duration="0:0:0.15"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.ExitActions>
+                            </Trigger>
+                        </DataTemplate.Triggers>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
         </StackPanel>
-    </Grid>
+
+
+        <Grid>
+            <Border>
+                <Border.Background>
+                    <LinearGradientBrush EndPoint="0.5 1" StartPoint="0.5 0">
+                        <GradientStop Color="#FF290736"/>
+                        <GradientStop Color="#FF0D323A" Offset="1"/>
+                    </LinearGradientBrush>
+                </Border.Background>
+                <Path Margin="20" Stretch="Uniform" Data="{Binding SelectedIcon.IconData}" Fill="White"/>
+            </Border>
+        </Grid>
+    </DockPanel>
 </Window>
 
