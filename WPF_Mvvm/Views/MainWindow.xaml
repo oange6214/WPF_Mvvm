@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPF_Mvvm" 
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         mc:Ignorable="d"
         DataContext="{Binding Source={StaticResource Locator}, Path=MainViewModel}"
         Title="MainWindow" Height="450" Width="800">
@@ -21,7 +22,7 @@
                     </Viewbox>
                 </Button>
             </DockPanel>
-            
+
             <ItemsControl Margin="10 0" ItemsSource="{Binding SetIconModels}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -32,24 +33,37 @@
                 <ItemsControl.ItemTemplate> 
                     <DataTemplate>
                         <Border  BorderThickness="1" Background="Wheat" BorderBrush="Black" Margin="5" Padding="5" Width="80">
-                            <Border.InputBindings>
+                            <!--利用 InputBindings 綁定滑鼠-->
+                            <!--<Border.InputBindings>
                                 <MouseBinding MouseAction="LeftClick" 
                                               Command="{Binding DataContext.ChooseCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}"
                                               CommandParameter="{Binding .}"/>
-                            </Border.InputBindings>
-                            
-                            <DockPanel>
-                                <Grid x:Name="grid" DockPanel.Dock="Top" Background="Transparent" MinHeight="36" MinWidth="36">
-                                    <Path x:Name="icon" Data="{Binding IconData}" Width="20" Height="20" Fill="Black" Stretch="Uniform"
-                                      Opacity="0.8">
-                                        <Path.LayoutTransform>
-                                            <ScaleTransform x:Name="IconScale"/>
-                                        </Path.LayoutTransform>
-                                    </Path>
-                                </Grid>
+                            </Border.InputBindings>-->
 
-                                <TextBlock Text="{Binding IconName}" HorizontalAlignment="Center"/>
-                            </DockPanel>
+                            <!--利用 Interaction 觸發器，進行事件處發偵測-->
+                            <!--<i:Interaction.Triggers>
+                                <i:EventTrigger EventName="MouseLeftButtonDown">
+                                    <i:InvokeCommandAction Command="{Binding DataContext.ChooseCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}"
+                                                           CommandParameter="{Binding .}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>-->
+
+                            <!--建立自定控制-->
+                            <local:CommandCustomControl Command="{Binding DataContext.ChooseCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}"
+                                                        CommandParameter="{Binding .}">
+                                <DockPanel>
+                                    <Grid x:Name="grid" DockPanel.Dock="Top" Background="Transparent" MinHeight="36" MinWidth="36">
+                                        <Path x:Name="icon" Data="{Binding IconData}" Width="20" Height="20" Fill="Black" Stretch="Uniform"
+                                      Opacity="0.8">
+                                            <Path.LayoutTransform>
+                                                <ScaleTransform x:Name="IconScale"/>
+                                            </Path.LayoutTransform>
+                                        </Path>
+                                    </Grid>
+
+                                    <TextBlock Text="{Binding IconName}" HorizontalAlignment="Center"/>
+                                </DockPanel>
+                            </local:CommandCustomControl>
                         </Border>
 
                         <DataTemplate.Triggers>
